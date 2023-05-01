@@ -9,7 +9,7 @@
         </template>
     </draggable> -->
     <div>
-
+        
     </div>
 </template>
 
@@ -43,10 +43,12 @@ export default {
             axiosClient.get('/cpu')
             .then((response)=>{
                 this.options = (response.data);
-                this.options.forEach(element => {
-                this.cpus.push({label: element.Model, id: element.id})
-            });
-            store.commit('setCpus', this.options);
+            //     this.options.forEach(element => {
+            //     this.cpus.push({label: element.Model, id: element.id})
+            // });
+            // store.commit('setCpus', this.options);
+
+            
         })
       }
        

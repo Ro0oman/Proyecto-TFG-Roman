@@ -70,9 +70,10 @@
         store
         .dispatch('login', this.user)
         .then(()=>{
-          this.$router.push({
-            name:'Dashboard'
-          })
+          this.$router.go(0)
+          // this.$router.push({
+          //   name:'Application'
+          // })
         })
         .catch((error)=>{
           console.log(error);

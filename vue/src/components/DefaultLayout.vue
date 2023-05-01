@@ -1,7 +1,5 @@
 <template>
-
-
-    <div class="min-h-full" v-if="getFirstLetter">
+    <div class="min-h-full">
       <Disclosure as="nav" class="bg-gray-800" v-slot="{ open }">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div class="flex h-16 items-center justify-between">
@@ -206,31 +204,20 @@
           store.state.user.data.id = this.id;
           this.isLogued = true;
         }
+        console.log(this.isLogued);
     },  
     computed:{
       checkLog(){
         this.user = store.state.user
-        let token = sessionStorage.getItem('TOKEN')
-        console.log(this.user);
-        if(token && this.user.name){
-          this.firstLetter = this.user.name.charAt(0)
-        }
-        console.log('Token: '+token);
-        if(token === 'null' || token == null){
-          this.isLogued = false;
+        if(!sessionStorage.getItem('ID')){
+          this.isLogued = false
+          return false;
         }else{
+          this.firstLetter = sessionStorage.getItem('NAME').charAt(0);
           this.isLogued = true;
+          return true;
         }
-        return this.isLogued
       },
-      getFirstLetter(){
-        let token = sessionStorage.getItem('TOKEN')
-        let name = sessionStorage.getItem('NAME')
-        if(name){
-          this.firstLetter = name.charAt(0)
-        }
-        return true
-      }
     }
   }
   

@@ -60,6 +60,7 @@ const store = createStore({
             })
         },
         setUser(state, userData){
+            this.$router.go()
             if(userData.token === undefined){
                 return false;
             }else{
