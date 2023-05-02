@@ -12,6 +12,9 @@ const store = createStore({
         }, 
         cpus:{
 
+        },
+        allComputers:{
+            
         }
     },
     getters:{
@@ -80,6 +83,9 @@ const store = createStore({
         },
         setUser(state,user){
             state.user = user
+        },
+        setAllComputers(state,allComputers){
+            state.allComputers = allComputers
         }
     },
     modules:{
