@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-[#2F4858]">
+    <div class="bg-[#101014]">
       <header class="shadow">
         <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <h1 class="text-3xl font-bold  text-[#F1574B]">{{title}}</h1>

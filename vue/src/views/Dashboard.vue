@@ -3,18 +3,24 @@
     title="PC-Builder">
       <div class="w-full h-80">
         <n-carousel show-arrow autoplay>
-          <img
-            class="carousel-img"
-            src="../assets/4000series.jpg"
-          >
-          <img
-            class="carousel-img"
-            src="../assets/community.png"
-          >
-          <img
-            class="carousel-img"
-            src="../assets/games.png"
-          >
+          <router-link :to="{ name: 'Application' }">
+            <img
+              class="carousel-img"
+              src="../assets/4000series.jpg"
+            >
+          </router-link>
+          <router-link :to="{ name: 'Community' }">
+            <img
+              class="carousel-img"
+              src="../assets/community.png"
+            >
+          </router-link>
+          <router-link :to="{ name: 'Application' }">
+            <img
+              class="carousel-img"
+              src="../assets/games.png"
+            >
+          </router-link>
           <template #arrow="{ prev, next }">
             <div class="custom-arrow">
               <button type="button" class="custom-arrow--left" @click="prev">

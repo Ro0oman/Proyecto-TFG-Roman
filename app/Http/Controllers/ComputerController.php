@@ -27,6 +27,10 @@ class ComputerController extends Controller
         FROM ram_used RU, rams R, computers C
         WHERE RU.id_pc = C.id AND RU.id_ram = R.id
         AND C.user = '.$id_user);
+
+        $games = DB::select('SELECT id_pc, id_videogame
+        FROM assigned_videogame');
+
         // return response()->json($pcs);
         $computers = array();
         foreach ($pcs as $pc) {
@@ -66,14 +70,27 @@ class ComputerController extends Controller
             ),
             'psu'=>array(
                 'power'=>$pc->power,
+            ),
+            'pcRam'=>array(
+            ),
+            'pcVideogames'=>array(
             )
            ));
         }
 
         foreach ($computers as $key => $pc) {
+            foreach ($games as $game) {
+                if($pc['id'] == $game->id_pc){
+                    array_push($computers[$key]['pcVideogames'], array(
+                        'id_videogame'=>$game->id_videogame,
+                    ));
+                }
+            }
+        }
+        foreach ($computers as $key => $pc) {
             foreach ($rams as $ram) {
                 if($pc['id'] == $ram->id){
-                    array_push($computers[$key], array(
+                    array_push($computers[$key]['pcRam'], array(
                         'type_ram'=>$ram->type_ram,
                         'quantity'=>$ram->quantity
                     ));
@@ -81,12 +98,14 @@ class ComputerController extends Controller
             }
         }
 
+
+
         return response()->json($computers);
     }
 
     public function index()
     {
-        $pcs = DB::select('SELECT C.id, C.name, C.description, C.visible,
+        $pcs = DB::select('SELECT C.id, C.name, C.description, 
         P.Processorbranding, P.Model, P.CoresThreads, P.Base, P.TDPCPU, P.PriceCPU, P.BrandCPU 
         ,M.socket_cpu, M.modelMotherboard, M.chipset, M.priceMotherboard, M.maxram, M.ram, M.ramslots
         ,G.modelGPU, G.launch, G.priceGPU, G.memory, G.TDPGPU, G.brandGPU
@@ -94,13 +113,20 @@ class ComputerController extends Controller
         ,PS.power
         FROM computers C, allcpus P , motherboards M, graficas G, storages S, psus PS
         WHERE P.id = C.cpu AND M.id = C.motherboard AND G.id = C.gpu AND S.id = C.storage 
-		  AND PS.id = C.psu AND C.visible = 1' );
+		  AND PS.id = C.psu');
+        $rams = DB::select('SELECT R.type_ram, R.quantity, C.id
+        FROM ram_used RU, rams R, computers C
+        WHERE RU.id_pc = C.id AND RU.id_ram = R.id');
+
+        $games = DB::select('SELECT id_pc, id_videogame
+        FROM assigned_videogame');
+
+        // return response()->json($pcs);
         $computers = array();
         foreach ($pcs as $pc) {
-            array_push($computers, array(
+           array_push($computers, array(
             'id'=>$pc->id,
             'name'=>$pc->name,
-            'visible'=>$pc->visible,
             'description'=>$pc->description,
             'cpu'=>array(
                 'Processorbranding'=>$pc->Processorbranding,
@@ -134,17 +160,43 @@ class ComputerController extends Controller
             ),
             'psu'=>array(
                 'power'=>$pc->power,
+            ),
+            'pcRam'=>array(
+            ),
+            'pcVideogames'=>array(
             )
-            ));
+           ));
         }
-        return response()->json($computers);
 
+        foreach ($computers as $key => $pc) {
+            foreach ($rams as $ram) {
+                if($pc['id'] == $ram->id){
+                    array_push($computers[$key]['pcRam'], array(
+                        'type_ram'=>$ram->type_ram,
+                        'quantity'=>$ram->quantity
+                    ));
+                }
+            }
+        }
+
+        foreach ($computers as $key => $pc) {
+            foreach ($games as $game) {
+                if($pc['id'] == $game->id_pc){
+                    array_push($computers[$key]['pcVideogames'], array(
+                        'id_videogame'=>$game->id_videogame,
+                    ));
+                    
+                }
+            }
+        }
+
+        return response()->json($computers);
+        }
         // $record = DB::table('has_pcs')
         // ->where('id_user', '=', $callSid)
         // ->get();
         // $pc = DB::select()
         // return $record;
-    }
 
     /**
      * Show the form for creating a new resource.
