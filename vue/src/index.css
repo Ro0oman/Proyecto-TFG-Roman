@@ -9,3 +9,23 @@
 .subTitulo{
     @apply text-yellow-300 my-2 text-xl 
 }
+
+.customYellow{
+    @apply bg-[#b2b20b]
+}
+
+.textYellow{
+    @apply text-[#b2b20b]
+}
+
+.customBlack{
+    @apply bg-[#222222]
+}
+
+.customLightBlack{
+    @apply bg-[#262626]
+}
+
+.icon{
+    @apply w-10 h-10 textYellow 
+}

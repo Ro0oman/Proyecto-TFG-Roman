@@ -1,11 +1,11 @@
 
 <template>
-  <div class="flex min-h-full items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+  <div class="flex min-h-full  items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
     <div class="w-full max-w-md space-y-8">
       <div>
         <img class="mx-auto h-12 w-auto" src="../assets/chapa.png" alt="Your Company" />
-        <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">Register for free</h2>
-        <p class="text-center">Or 
+        <h2 class="mt-6 text-center text-3xl font-bold tracking-tight textYellow">Register for free</h2>
+        <p class="text-center textYellow">Or 
           <router-link :to="{name:'Login'}" class="link ">
             log in
           </router-link> 

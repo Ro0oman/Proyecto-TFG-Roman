@@ -1,6 +1,6 @@
 <template>
-    <div class="min-h-full">
-      <Disclosure as="nav" class="bg-gray-800" v-slot="{ open }">
+    <div class="min-h-full customLightBlack">
+      <Disclosure as="nav" v-slot="{ open }">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div class="flex h-16 items-center justify-between">
             <div class="flex items-center">
@@ -15,11 +15,11 @@
                   v-for="item in navigation"
                   :key="item.name"
                   :to="item.to"
-                  active-class="bg-gray-900 text-white"
+                  active-class="bg-[#eded00] text-black"
                   :class="[
                     $route.name === item.to.name
                       ? ''
-                      : 'text-gray-300 hover:bg-gray-700 bg-transparent hover:text-white',
+                      : 'text-gray-300 hover:bg-[#eded00]  bg-transparent hover:text-black',
                     'px-3 py-2 rounded-md text-sm font-medium',
                   ]"
                   >{{ item.name }}
@@ -92,11 +92,11 @@
             v-for="item in navigation"
             :key="item.name"
             :to="item.to"
-            active-class="bg-gray-900 text-white"
+            active-class="bg-[#eded00] text-black"
             :class="[
               this.$route.name === item.to.name
                 ? ''
-                : 'text-gray-300 hover:bg-gray-900 bg-transparent hover:text-white',
+                : 'text-gray-300 hover:bg-[#eded00]  bg-transparent hover:text-black',
               'block px-3 py-2 rounded-md text-base font-medium',
             ]"
             >{{ item.name }}

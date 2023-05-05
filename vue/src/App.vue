@@ -1,12 +1,15 @@
 <template>
-  <DefaultLayout></DefaultLayout>
-  <router-view></router-view>
+  <div class="bg-[#222222] min-h-screen">
+    <DefaultLayout></DefaultLayout>
+    <div>
+      <router-view></router-view>
+    </div>
+  </div>
 </template>
 
 <script>
   import DefaultLayout from './components/DefaultLayout.vue'
   import 'vue3-loading-overlay/dist/vue3-loading-overlay.css';
-
   export default{
     setup(){
 

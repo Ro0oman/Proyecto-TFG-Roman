@@ -1,12 +1,13 @@
 <template>
-    <div class="bg-[#101014]">
+    <div class="bg-[#222222]">
       <header class="shadow">
         <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <h1 class="text-3xl font-bold  text-[#F1574B]">{{title}}</h1>
+          <h1 class="text-3xl font-bold text-[#eded00]">{{title}}</h1>
         </div>
+        <hr>
       </header>
-      <main class="min-h-screen">
-        <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+      <main class="min-h-screen flex ">
+        <div class="mx-auto">
           <slot></slot>
         </div>
       </main>

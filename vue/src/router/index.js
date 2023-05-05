@@ -4,6 +4,7 @@ import Dashboard from '../views/Dashboard.vue'
 import Community from '../views/Community.vue'
 import Application from '../views/Application.vue'
 import PcCreator from '../views/PcCreator.vue'
+import PageNotFound from '../views/PageNotFound.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
 import Profile from '../views/Profile.vue'
@@ -56,7 +57,12 @@ const routes = [
         meta:{
             requiresAuth: true
         }
-    }
+    },
+    {
+        name:'NotFound',
+        path:'/:pathMatch(.*)*',
+        component: PageNotFound
+    },
 ];
 
 

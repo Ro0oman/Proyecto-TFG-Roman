@@ -3,9 +3,9 @@
     <div class="w-full max-w-md space-y-8">
       <div>
         <img class="mx-auto h-12 w-auto" src="../assets/chapa.png" alt="Your Company" />
-        <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">Log in</h2>
-        <p class="text-center">Or 
-          <router-link :to="{name:'Register'}" class="link ">
+        <h2 class="mt-6 text-center text-3xl font-bold tracking-tight textYellow">Log in</h2>
+        <p class="text-center textYellow">Or 
+          <router-link :to="{name:'Register'}" class="link">
             register
           </router-link> 
         </p>
