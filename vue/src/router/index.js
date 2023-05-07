@@ -4,6 +4,8 @@ import Dashboard from '../views/Dashboard.vue'
 import Community from '../views/Community.vue'
 import Application from '../views/Application.vue'
 import PcCreator from '../views/PcCreator.vue'
+import componentPicker from '../views/componentPicker.vue'
+import Computer from '../views/Computer.vue'
 import PageNotFound from '../views/PageNotFound.vue'
 import Login from '../views/Login.vue'
 import Register from '../views/Register.vue'
@@ -63,6 +65,19 @@ const routes = [
         path:'/:pathMatch(.*)*',
         component: PageNotFound
     },
+    {
+        name:'Computer',
+        path:'/computer/:id',
+        component: Computer
+    },
+    {
+        path: '/componentPicker',
+        name: 'componentPicker',
+        component: componentPicker,
+        meta:{
+            requiresAuth: true
+        }
+    }
 ];
 
 

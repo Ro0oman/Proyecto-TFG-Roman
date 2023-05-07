@@ -21,11 +21,11 @@
   <page-component title="Community content">
     <div class="flex flex-col">
       <div class="w-2/3 m-auto" >
-        <div class="text-xl font-bold text-[#eded00] py-4">
+        <div class="text-xl font-bold text-white py-4">
           Search settings
         </div>
         <div class="rounded-lg bg-[#4c4c4c] p-4">
-          <div class="font-bold text-[#eded00]">
+          <div class="font-bold textYellow">
             Filter by Game
           </div>
           <input v-model="searchInput" type="text" class="w-full rounded my-2" placeholder="Search any STEAM game" />
@@ -43,21 +43,26 @@
       <div class="flex flex-wrap justify-center font-medium " v-if="computers.length">
         <div class="w-2/3 m-auto px-4 my-4 p-4 rounded-lg  min-h-[80vh]">
           <div class="flex justify-between font-bold">
-            <div class="ml-4 text-center text-2xl text-[#eded00]">Community computers</div>
-            <n-button type="success" ghost @click="$router.push('/pccreator')">
+            <div class="ml-4 text-center text-3xl text-white">Community computers</div>
+            <n-button type="success" ghost @click="createPcCommunity" color="yellow">
               Create your PC
             </n-button>
           </div>
           <div class="grid lg:grid-cols-3 sm:grid-cols-2 gap-4 w-full mt-4 justify-items-strech">
             <div v-for="computer in getComputers" :key="computer" >
-              <n-card class="bg-slate-600 w-full"  :bordered="false">
+              <n-card class="bg-slate-600 w-full cursor-pointer transition hover:scale-110" @click="goToComputer(computer)" :bordered="false">
                 <template #cover v-if="computer.pcVideogames.length">
                   <img :src="computer.pcVideogames[0].imageUrl" >
                 </template>
                 <div>
                   <div class="text-xl flex fler-row">
                     <span class="w-full">
-                      {{ computer.name }}
+                      {{ computer.pc_name }}
+                    </span>
+                    <span>
+                      <small class="text-xs truncate link">
+                        {{ computer.user.name }}
+                      </small>
                     </span>
                   </div>
                   <div>
@@ -139,6 +144,21 @@ export default {
     }
   },
   methods: {
+    goToComputer(computer){
+        store.commit('setComputerId', computer);
+        this.$router.push({
+          path:'/computer/'+computer.id
+        })
+    },
+    createPcCommunity(){
+      if(!sessionStorage.getItem('ID')){
+        this.$router.push(
+          {name:'Register'}
+        );
+      }else{
+        this.$router.push('/pccreator')
+      }
+    },
     search() {
       console.log(this.computers)
       this.computers = this.computers.filter(computer => {
@@ -179,6 +199,8 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+span{
+  color: yellow;
+}
 </style>

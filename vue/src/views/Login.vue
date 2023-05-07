@@ -70,14 +70,13 @@
         store
         .dispatch('login', this.user)
         .then(()=>{
-          this.$router.go(0)
-          // this.$router.push({
-          //   name:'Application'
-          // })
+          this.$router.push({
+            name:'Application'
+          })
         })
         .catch((error)=>{
           console.log(error);
-          this.error = error.response.data.error
+          this.error = error
         })
       },
       clearError(){
@@ -86,3 +85,9 @@
     }
   }
   </script>
+
+<style scoped>
+span{
+  color: yellow;
+}
+</style>

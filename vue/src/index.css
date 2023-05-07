@@ -15,7 +15,7 @@
 }
 
 .textYellow{
-    @apply text-[#b2b20b]
+    @apply text-[#eded00]
 }
 
 .customBlack{
@@ -27,5 +27,9 @@
 }
 
 .icon{
-    @apply w-10 h-10 textYellow 
+    @apply w-16 h-16 textYellow 
 }
+
+.noob{
+    background-image: url('../assets/noob.png') ;
+ }

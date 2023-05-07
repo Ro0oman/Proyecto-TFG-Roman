@@ -44,20 +44,20 @@
                       </n-avatar>  
                     </MenuButton>
                   </div>
-                  <div v-else class="grid gap-2 grid-cols-2">
+                  <div v-else class="grid gap-2 grid-cols-2 textYellow">
                     <n-button type="primary" ghost @click="$router.push('/login')">
-                      <a>
+                      <a class="textYellow">
                         Log in
                       </a>
                     </n-button>
                     <n-button type="info" ghost  @click="$router.push('/register')">
-                      <a>
+                      <a class="textYellow">
                         Register
                       </a>
                     </n-button>
                   </div>
                   <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
-                    <MenuItems class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <MenuItems class="absolute textYellow right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                       <MenuItem>
                         <a 
                         @click="$router.push('/profile')"
@@ -128,14 +128,14 @@
                 </DisclosureButton>
               </div>
             </div>
-            <div v-else class="grid gap-2 grid-cols-2">
+            <div v-else class="grid gap-2 grid-cols-2 textYellow">
               <n-button type="primary" ghost @click="$router.push('/login')">
-                <a>
+                <a class="textYellow">
                   Log in
                 </a>
               </n-button>
               <n-button type="info" ghost  @click="$router.push('/register')">
-                <a>
+                <a class="textYellow">
                   Register
                 </a>
               </n-button>
@@ -172,7 +172,7 @@
         const store = useStore()
         const navigation = [
           { name: "Community", to: { name: "Community" } },
-          { name: "Application", to: { name: "Application" }, Auth: true},
+          { name: "Your Computers", to: { name: "Application" }, Auth: true},
         ];
         const router = useRouter()
         const user = ref({})
@@ -209,7 +209,8 @@
     computed:{
       checkLog(){
         this.user = store.state.user
-        if(!sessionStorage.getItem('ID')){
+        let id =sessionStorage.getItem('ID');
+        if(!id){
           this.isLogued = false
           return false;
         }else{
@@ -222,3 +223,9 @@
   }
   
   </script>
+
+<style scoped>
+span{
+  color: yellow;
+}
+</style>

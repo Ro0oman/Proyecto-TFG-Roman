@@ -15,6 +15,12 @@ const store = createStore({
         },
         allComputers:{
             
+        },
+        computerId:{
+            
+        },
+        game:{
+            
         }
     },
     getters:{
@@ -40,6 +46,9 @@ const store = createStore({
                     sessionStorage.setItem('TOKEN', response.data.token); 
                     sessionStorage.setItem('ID', response.data.user.id); 
                     sessionStorage.setItem('NAME', response.data.user.name); 
+                    setTimeout(() => { 
+                        location.reload();
+                      }, 1000);
                     return response.data
                 }
             })
@@ -86,6 +95,12 @@ const store = createStore({
         },
         setAllComputers(state,allComputers){
             state.allComputers = allComputers
+        },
+        setComputerId(state,computer){
+            state.computerId = computer
+        },
+        setGame(state,game){
+            state.game = game
         }
     },
     modules:{

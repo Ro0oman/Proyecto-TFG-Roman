@@ -13,16 +13,17 @@ class ComputerController extends Controller
      * Display a listing of the resource.
      */
     public function getIdPc($id_user){
-        $pcs = DB::select('SELECT C.id, C.name, C.description, 
-        P.Processorbranding, P.Model, P.CoresThreads, P.Base, P.TDPCPU, P.PriceCPU, P.BrandCPU 
+        $pcs = DB::select('SELECT C.id, C.pc_name, C.description, C.user
+        ,U.name
+        ,P.Processorbranding, P.Model, P.CoresThreads, P.Base, P.TDPCPU, P.PriceCPU, P.BrandCPU 
         ,M.socket_cpu, M.modelMotherboard, M.chipset, M.priceMotherboard, M.maxram, M.ram, M.ramslots
         ,G.modelGPU, G.launch, G.priceGPU, G.memory, G.TDPGPU, G.brandGPU
         ,S.type_storage, S.quantity  
         ,PS.power
-        FROM computers C, allcpus P , motherboards M, graficas G, storages S, psus PS
+        FROM computers C, allcpus P , motherboards M, graficas G, storages S, psus PS, users U
         WHERE P.id = C.cpu AND M.id = C.motherboard AND G.id = C.gpu AND S.id = C.storage 
-		  AND PS.id = C.psu 
-		  AND C.user = '.$id_user);
+        AND PS.id = C.psu 
+        AND U.id = '.$id_user.' AND C.user = '.$id_user);
         $rams = DB::select('SELECT R.type_ram, R.quantity, C.id
         FROM ram_used RU, rams R, computers C
         WHERE RU.id_pc = C.id AND RU.id_ram = R.id
@@ -36,8 +37,12 @@ class ComputerController extends Controller
         foreach ($pcs as $pc) {
            array_push($computers, array(
             'id'=>$pc->id,
-            'name'=>$pc->name,
+            'pc_name'=>$pc->pc_name,
             'description'=>$pc->description,
+            'user'=>array(
+                'id'=>$pc->user,
+                'name'=>$pc->name,
+            ),
             'cpu'=>array(
                 'Processorbranding'=>$pc->Processorbranding,
                 'Model'=>$pc->Model,
@@ -105,15 +110,17 @@ class ComputerController extends Controller
 
     public function index()
     {
-        $pcs = DB::select('SELECT C.id, C.name, C.description, 
-        P.Processorbranding, P.Model, P.CoresThreads, P.Base, P.TDPCPU, P.PriceCPU, P.BrandCPU 
+        $pcs = DB::select('SELECT C.id, C.pc_name, C.description, C.user
+        ,U.name
+        ,P.Processorbranding, P.Model, P.CoresThreads, P.Base, P.TDPCPU, P.PriceCPU, P.BrandCPU 
         ,M.socket_cpu, M.modelMotherboard, M.chipset, M.priceMotherboard, M.maxram, M.ram, M.ramslots
         ,G.modelGPU, G.launch, G.priceGPU, G.memory, G.TDPGPU, G.brandGPU
         ,S.type_storage, S.quantity  
         ,PS.power
-        FROM computers C, allcpus P , motherboards M, graficas G, storages S, psus PS
+        FROM computers C, allcpus P , motherboards M, graficas G, storages S, psus PS, users U
         WHERE P.id = C.cpu AND M.id = C.motherboard AND G.id = C.gpu AND S.id = C.storage 
-		  AND PS.id = C.psu');
+		  AND PS.id = C.psu
+          AND U.id = C.user');
         $rams = DB::select('SELECT R.type_ram, R.quantity, C.id
         FROM ram_used RU, rams R, computers C
         WHERE RU.id_pc = C.id AND RU.id_ram = R.id');
@@ -126,8 +133,12 @@ class ComputerController extends Controller
         foreach ($pcs as $pc) {
            array_push($computers, array(
             'id'=>$pc->id,
-            'name'=>$pc->name,
+            'pc_name'=>$pc->pc_name,
             'description'=>$pc->description,
+            'user'=>array(
+                'id'=>$pc->user,
+                'name'=>$pc->name,
+            ),
             'cpu'=>array(
                 'Processorbranding'=>$pc->Processorbranding,
                 'Model'=>$pc->Model,

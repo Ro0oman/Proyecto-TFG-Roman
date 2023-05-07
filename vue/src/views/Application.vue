@@ -24,18 +24,31 @@
     <div class="flex flex-wrap justify-center font-medium ">
         <div class="w-full m-auto px-4 my-4 p-4 rounded-lg  min-h-[80vh]">
           <div class="flex justify-between font-bold">
-            <div class="text-white  ml-4 text-center text-2xl">Your computers</div>
-            <n-button type="success" ghost @click="$router.push('/pccreator')">
+            <div class="text-white m-auto text-center text-3xl font-sans">Your computers</div>
+          </div>
+          <div class="flex flex-wrap justify-center font-medium " v-if="computers.length">
+        <div class="w-2/3 m-auto px-4 my-4 p-4 rounded-lg  min-h-[80vh]">
+          <div class="flex justify-between font-bold">
+            <div class="ml-4 text-center text-2xl textYellow">Community computers</div>
+            <n-button type="success" ghost @click="$router.push('/pccreator')" color="yellow">
               Create your PC
             </n-button>
           </div>
-          <div class="grid lg:grid-cols-2 sm:grid-cols-1 gap-4 w-full mt-4 justify-items-center" v-if="computers.length>0">
-            <div class="w-4/5" v-for="computer in getComputers" :key="computer">
-              <n-card class="bg-slate-800 text-white ">
+          <div class="grid lg:grid-cols-3 grid-cols-1 sm:grid-cols-1 gap-4 w-full mt-4 justify-items-strech">
+            <div v-for="computer in getComputers" :key="computer" >
+              <n-card class="bg-slate-600 w-full cursor-pointer transition hover:scale-110" :bordered="false" @click="goToComputer(computer)">
+                <template #cover v-if="computer.pcVideogames.length">
+                  <img :src="computer.pcVideogames[0].imageUrl" >
+                </template>
                 <div>
                   <div class="text-xl flex fler-row">
-                    <span class="m-auto w-full">
-                      {{ computer.name }}
+                    <span class="w-full">
+                      {{ computer.pc_name }}
+                    </span>
+                    <span>
+                      <small class="text-xs truncate link">
+                        {{ computer.user.name }}
+                      </small>
                     </span>
                   </div>
                   <div>
@@ -43,40 +56,14 @@
                       {{ computer.description }}
                     </p>
                     <div class="text-lg grid">
-                      <div class="list">
-                        <ul>
-                          <!-- <li>
-                                    <Icon>
-                                      <Cpu/>
-                                    </Icon>
-                                    <span>CPU:</span>
-                                     {{ computer.cpu.Model }}
-                                  </li>
-                                  <li><span>Motherboard</span>: {{ computer.motherboard.modelMotherboard}}</li>
-                                  <li><span>GPU</span>: {{ computer.gpu.modelGPU }}</li>
-                                  <li><span>RAM</span>
-                                    <li v-for="ramModule in computer.pcRam">
-                                      {{ ramModule.quantity }}GB - {{ ramModule.type_ram }}
-                                    </li>
-                                  </li>
-                                  <li><span>Power supply</span>: {{ computer.psu.power }}W</li>
-                                  <li><span>Storage</span>:
-                                    <li class="ml-2">{{ computer.storage.quantity }}GB {{ computer.storage.type_storage }}</li>
-                                  </li> -->
-                          <li v-if="computer.pcVideogames.length">
-                            <span>Videogames</span>
-                          <li v-for="game in computer.pcVideogames">
-                            <img :src="game.imageUrl" alt="">
-                          </li>
-                          </li>
-                        </ul>
-                      </div>
                     </div>
                   </div>
                 </div>
               </n-card>
             </div>
           </div>
+        </div>
+      </div>
           <div v-else class="flex w-full">
             <div class="m-auto">
               <n-alert class="bg-black ">
@@ -107,10 +94,8 @@
   import {EditRegular} from '@vicons/fa'
   import { Icon } from '@vicons/utils'
   import {SpinnerIos20Filled} from '@vicons/fluent'
-  import axios from 'axios'
   import loading from 'vue3-loading-overlay'
-
-  
+  import axios from 'axios'
 
   export default {
     components: { 
@@ -158,8 +143,11 @@
         }
     },
     methods:{
-      getPCs(){
-         
+      goToComputer(computer){
+        store.commit('setComputerId', computer);
+        this.$router.push({
+          path:'/computer/'+computer.id
+        })
       },
     getImages() {
       this.computers.forEach(element => {
@@ -181,7 +169,8 @@
   }
   </script>
   
-  <style>
-  
-  
-  </style>
+  <style scoped>
+  span{
+    color: yellow;
+  }
+</style>
