@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-[#222222] min-h-screen">
+  <div class="bg-[#222222] min-h-screen overflow-hidden">
     <DefaultLayout></DefaultLayout>
     <div>
       <router-view></router-view>

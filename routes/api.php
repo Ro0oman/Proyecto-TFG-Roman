@@ -2,6 +2,11 @@
 
 use App\Http\Controllers\ComputerController;
 use App\Http\Controllers\allcpuController;
+use App\Http\Controllers\MotherboardController;
+use App\Http\Controllers\GraficaController;
+use App\Http\Controllers\RamController;
+use App\Http\Controllers\StorageController;
+use App\Http\Controllers\PsuController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -41,4 +46,19 @@ Route::resources([
 ]);
 Route::resources([
     'cpu' => allcpuController::class,
+]);
+Route::resources([
+    'motherboard' => MotherboardController::class,
+]);
+Route::resources([
+    'gpu' => GraficaController::class,
+]);
+Route::resources([
+    'ram' => RamController::class,
+]);
+Route::resources([
+    'storage' => StorageController::class,
+]);
+Route::resources([
+    'psu' => PsuController::class,
 ]);

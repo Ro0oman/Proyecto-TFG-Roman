@@ -6,8 +6,8 @@
         </div>
         <hr>
       </header>
-      <main class="min-h-screen flex ">
-        <div class="mx-auto">
+      <main class="flex ">
+        <div class="mx-auto ">
           <slot></slot>
         </div>
       </main>
