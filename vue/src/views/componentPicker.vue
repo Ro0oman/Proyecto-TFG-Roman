@@ -1,13 +1,34 @@
 <template>
+     <n-modal v-model:show="showModal">
+        <n-card
+        style="width: 600px"
+        title="Confirmation"
+        :bordered="false"
+        size="huge"
+        role="dialog"
+        aria-modal="true"
+        
+        >
+        Have you completed the computer? Or do you want to make any changes?
+        <div class="w-full flex flex-row items-center justify-center my-4">
+            <n-button type="info" @click="createComputer()" class="bg-blue-700  mx-2">
+                Complete PC
+            </n-button>
+            <n-button type="warning" @click="showModal = false" class="bg-green-700 mx-2">
+                Modify PC
+            </n-button>
+        </div>
+        </n-card>
+    </n-modal>
     <loading :active="isLoading" :can-cancel="true">
         <div class="text-xl p-4 bg-black text-white rounded-lg ">
+            {{ loadingText }}
             <Icon class="animate-spin">
                 <SpinnerIos20Filled />
             </Icon>
-            {{ loadingText }}
         </div>
     </loading>
-    <div v-if="game" class="w-full mx-10 p-6 m-4 rounded bg-[#475569] ">
+    <div v-if="game" class="w-2/3 mx-auto p-6 my-6 rounded bg-[#475569] ">
             <p class="text-4xl textYellow my-6 font-bold">
                 {{ game.name }}
             </p>
@@ -23,26 +44,27 @@
                         </div>
                     </n-tab-pane>
                 </n-tabs>
-            </div>
         </div>
-    <div class="flex lg:flex-row flex-col items-center my-10 justify-between w-3/4 m-auto">
-        
-
-        <div class="lg:w-1/2 min-h-[50vh]" v-if="!computerCompleted">
+    </div>
+    <div class="flex lg:flex-row flex-col items-center my-10 justify-between w-3/4 m-auto" v-if="!finalStep" >
+        <div class="lg:w-1/2 " v-if="!computerCompleted">
             <n-card>
-                <n-transfer ref="transfer" source-filterable v-model:value="value" :options="createOptions" />
+                <n-transfer ref="transfer" class="min-h-[50vh]" source-filterable v-model:value="value" :options="createOptions" />
             </n-card>
             <div class="flex flex-row w-full items-center justify-center p-4">
-                <n-button type="info" @click="nextSteps" class="mx-2">
+                <n-button type="info" @click="nextSteps" class="mx-2 p-4" :disabled="createOptions.length<0" v-if="actualStep!=='psu'">
                     Next Step
+                </n-button>
+                <n-button type="info" @click="showConfirmation" class="mx-2" v-else>
+                    Complete computer
                 </n-button>
             </div>
         </div>
         
-        <div class="lg:w-1/2 mx-2 min-h-[50vh]" v-if="!computerCompleted">
+        <div class="lg:w-1/2 mx-2" v-if="!computerCompleted">
             <n-card>
                 Components
-                <ul class="min-h-[40vh] flex flex-col justify-between ">
+                <ul class="flex flex-col justify-between ">
                     <li v-for="(component, index) in computer" class="rounded bg-slate-600 p-4 text-white cursor-pointer my-2"
                     :class="actualStep == index ? '':'bg-blue-300'"
                         @click="actualStep = index">
@@ -51,45 +73,39 @@
                                 {{ index }}
                             </span> ->
                             <b>
-                                {{ component }}
+                                {{ index == 'cpu' ? component[0].Model+"-"+component[0].BrandCPU  : '' }}
+                                {{ index == 'motherboard' ? component[0].modelMotherboard+"-"+component[0].priceMotherboard  : '' }}
+                                {{ index == 'gpu' ? component[0].modelGPU+"-"+component[0].brandGPU  : '' }}
+                                {{ index == 'ram' ? component[0].quantity+"GB-"+component[0].type_ram : '' }}
+                                {{ index == 'storage' ? component[0].quantity+"-"+component[0].type_storage  : '' }}
+                                {{ index == 'psu' ? component[0].power+"W"  : '' }}
                             </b>
                         </button>
-                    </li>
-                    
-                </ul>
-            </n-card>
-        </div>
-        <div class="lg:w-3/3 mx-2 min-h-[50vh] bg-slate-500" v-else>
-            <n-card>
-                Components
-                <ul class="min-h-[40vh] flex flex-col justify-between ">
-                    <li v-for="(component, index) in computer" class="rounded p-4  bg-slate-600 text-white cursor-pointer my-2"
-                        @click="actualStep = index">
-                        <button>
-                            <span class="capitalize" >
-                                {{ index }}
-                            </span> ->
-                            <b>
-                                {{ component }}
-                            </b>
-                        </button>
+                        <div class="text-black" v-if="computerErrors[index].length>0">
+                            {{ computerErrors[index] }}
+                        </div>
                     </li>
                 </ul>
-                <div class="w-full flex flex-row justify-center">
-                    <n-button type="info" @click="editComputer" text-color="black" class="mx-2 text-xl">
-                        Edit computer
-                    </n-button>
-                    <n-button type="info" @click="editComputer" text-color="black"  class="mx-2 text-xl">
-                            Create computer
-                    </n-button>
-                </div>
             </n-card>
-        </div>
+        </div>    
+    </div>
+    <div v-else class="w-2/3 m-auto p-4 bg-slate-700 rounded flex flex-col">
+        <span class="textYellow">Name your computer</span>
+        <n-input v-model:value="computerName" type="text" placeholder="Basic Input" class="my-4" />
+        <span class="textYellow">Add a little description</span>
+        <n-input
+            v-model:value="computerDescription"
+            type="textarea"
+            placeholder="Basic Textarea"
+        />
+        <n-button type="info" class="my-4 m-auto" >
+            Create PC
+        </n-button>
     </div>
 </template>
 <script>
 import { ref } from 'vue';
-import { NTabs, NTabPane, NTransfer, NCard, NButton } from 'naive-ui';
+import { NTabs, NTabPane, NTransfer, NCard, NButton, NInput, NModal } from 'naive-ui';
 import store from '../store'
 import draggable from 'vuedraggable'
 import loading from 'vue3-loading-overlay'
@@ -102,11 +118,16 @@ export default {
     components: {
         draggable, loading, SpinnerIos20Filled,
         Icon, NTabs, NTabPane, NTransfer, NCard, NButton
+        ,NInput ,NModal
     },
     setup() {
         const game = ref()
+        const showModal = ref(false)
         const loadingText = ref()
-        const isLoading = ref(false)
+        const isLoading = ref(true)
+        const validInput = ref({})
+        const computerName = ref()
+        const computerDescription = ref()
         const computer = ref({
             cpu: 'Incompleted',
             motherboard: 'Incompleted',
@@ -115,6 +136,18 @@ export default {
             storage: 'Incompleted',
             psu: 'Incompleted',
         })
+        const computerErrors = ref({
+            cpu: '',
+            motherboard: '',
+            gpu: '',
+            ram: '',
+            storage: '',
+            psu: '',
+        })
+        const validateComputer = ref([
+            'cpu', 'motherboard', 'gpu', 'ram',
+            'storage', 'psu'
+        ])
         const cpuList = ref({})
         const cpuSelected = ref({})
         const motherboardList = ref({})
@@ -124,12 +157,15 @@ export default {
         const psuList = ref({})
         const value = ref([])
         const actualStep = ref('cpu')
+        const finalStep = ref(false)
         const computerCompleted = ref(false)
         return {
             game, loadingText, isLoading, computer, value,
             cpuList,actualStep, motherboardList
             , gpuList, ramList, storageList, psuList,
-            computerCompleted, cpuSelected
+            computerCompleted, cpuSelected, finalStep,
+            validateComputer, computerName, computerDescription,
+            validInput, showModal, computerErrors
         }
     },
     async created() {
@@ -140,26 +176,37 @@ export default {
             await axiosClient.get('cpu')
                 .then((response) => {
                     this.cpuList = response.data
+                    this.loadingText = "Loading CPU'S"
                 });
             await axiosClient.get('motherboard')
                 .then((response) => {
                     this.motherboardList = response.data
+                    this.loadingText = "Loading motherboards"
+
                 });
             await axiosClient.get('ram')
                 .then((response) => {
                     this.ramList = response.data
+                    this.loadingText = "Loading ram modules"
+
                 });
             await axiosClient.get('gpu')
                 .then((response) => {
                     this.gpuList = response.data
+                    this.loadingText = "Loading Graphics cards"
+
                 });
             await axiosClient.get('storage')
                 .then((response) => {
                     this.storageList = response.data
+                    this.loadingText = "Loading Storage modules"
+
                 });
             await axiosClient.get('psu')
                 .then((response) => {
                     this.psuList = response.data
+                    this.loadingText = "Loading Power supplies"
+                    this.isLoading = false
                 });
         } else {
             this.$router.push({
@@ -168,8 +215,42 @@ export default {
         }
     },
     methods: {
+        validateComponents(){
+           
+        },
+        showConfirmation(){
+            this.showModal = true
+        },
+        createComputer(){
+            this.validateComputer.forEach(element => {
+                if(this.computer[element] == '' ||this.computer[element] == undefined ){
+                    this.computerErrors[element] = 'This component cant be empty'
+                    return false
+                }
+            });
+            
+            // let computerCreated = {
+            //     description : 'Descripcion de la patata cosmica, la mejor patata del mundo',
+            //     cpu : this.computer.cpu[0].id,
+            //     motherboard : this.computer.motherboard[0].id,
+            //     gpu : this.computer.gpu[0].id,
+            //     storage : this.computer.storage[0].id,
+            //     psu : this.computer.psu[0].id,
+            //     user : sessionStorage.getItem('ID'),
+            //     pc_name : 'Patata cosmica',
+            //     id_videogame : this.game.steam_appid,
+            //     visible : 0
+            // }
+            // if(this.finalStep == 'done'){
+            //     axiosClient.post('/computer',computerCreated)
+            //     .then((response)=>{
+            //         console.log(response);
+            //     })
+            // }else{
+            //     this.finalStep = 'done'
+            // }
+        },
         nextSteps() {
-            console.log(this.actualStep);
             if (this.actualStep == 'cpu') {
                 this.computer.cpu = this.cpuList.filter( obj => obj.id == this.value[0]);
                 this.actualStep = 'motherboard'
@@ -200,7 +281,6 @@ export default {
                 this.computerCompleted = false
                 return true
             }
-
             if (this.actualStep == 'psu') {
                 this.computer.psu = this.psuList.filter( obj => obj.id == this.value[0]);
                 this.actualStep = 'end'
@@ -264,4 +344,10 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+input::placeholder {
+    font-weight: bold;
+    color: black;
+}
+
+</style>

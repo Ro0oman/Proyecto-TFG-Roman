@@ -11,7 +11,6 @@
     <n-alert title="Error Text" type="error">
       {{ error }}
       <div>
-        
       </div>
       <br>
       Please, reload the page or contact to <a class="text-blue-600 font-bold"

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Computer;
 use App\Models\hasPc;
+use App\Models\assigned_videogame;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -13,7 +14,7 @@ class ComputerController extends Controller
      * Display a listing of the resource.
      */
     public function getIdPc($id_user){
-        $pcs = DB::select('SELECT C.id, C.pc_name, C.description, C.user
+        $pcs = DB::select('SELECT C.id, C.pc_name, C.description, C.user, C.created_at
         ,U.name
         ,P.Processorbranding, P.Model, P.CoresThreads, P.Base, P.TDPCPU, P.PriceCPU, P.BrandCPU 
         ,M.socket_cpu, M.modelMotherboard, M.chipset, M.priceMotherboard, M.maxram, M.ram, M.ramslots
@@ -30,7 +31,7 @@ class ComputerController extends Controller
         AND C.user = '.$id_user);
 
         $games = DB::select('SELECT id_pc, id_videogame
-        FROM assigned_videogame');
+        FROM assigned_videogames');
 
         // return response()->json($pcs);
         $computers = array();
@@ -39,6 +40,7 @@ class ComputerController extends Controller
             'id'=>$pc->id,
             'pc_name'=>$pc->pc_name,
             'description'=>$pc->description,
+            'created_at'=>$pc->created_at,
             'user'=>array(
                 'id'=>$pc->user,
                 'name'=>$pc->name,
@@ -110,7 +112,7 @@ class ComputerController extends Controller
 
     public function index()
     {
-        $pcs = DB::select('SELECT C.id, C.pc_name, C.description, C.user
+        $pcs = DB::select('SELECT C.id, C.pc_name, C.description, C.user, C.created_at
         ,U.name
         ,P.Processorbranding, P.Model, P.CoresThreads, P.Base, P.TDPCPU, P.PriceCPU, P.BrandCPU 
         ,M.socket_cpu, M.modelMotherboard, M.chipset, M.priceMotherboard, M.maxram, M.ram, M.ramslots
@@ -120,13 +122,14 @@ class ComputerController extends Controller
         FROM computers C, allcpus P , motherboards M, graficas G, storages S, psus PS, users U
         WHERE P.id = C.cpu AND M.id = C.motherboard AND G.id = C.gpu AND S.id = C.storage 
 		  AND PS.id = C.psu
-          AND U.id = C.user');
+          AND U.id = C.user
+          AND C.visible = 1');
         $rams = DB::select('SELECT R.type_ram, R.quantity, C.id
         FROM ram_used RU, rams R, computers C
         WHERE RU.id_pc = C.id AND RU.id_ram = R.id');
 
         $games = DB::select('SELECT id_pc, id_videogame
-        FROM assigned_videogame');
+        FROM assigned_videogames');
 
         // return response()->json($pcs);
         $computers = array();
@@ -135,6 +138,7 @@ class ComputerController extends Controller
             'id'=>$pc->id,
             'pc_name'=>$pc->pc_name,
             'description'=>$pc->description,
+            'created_at'=>$pc->created_at,
             'user'=>array(
                 'id'=>$pc->user,
                 'name'=>$pc->name,
@@ -222,7 +226,12 @@ class ComputerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $computer= Computer::create($request->all());
+        $assigned_videogame = new assigned_videogame();
+        $assigned_videogame->id_pc= $computer['id'];
+        $assigned_videogame->id_videogame = $request['id_videogame'];
+        $assigned_videogame->save();
+        return response()->json();
     }
 
     /**

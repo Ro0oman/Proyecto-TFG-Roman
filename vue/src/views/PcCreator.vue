@@ -1,5 +1,14 @@
 <template>
-
+    <div v-if="error">
+    <n-alert title="Error Text" type="error" closable>
+      {{ error }}
+      <div>
+        
+      </div>
+      <br>
+      <b>This game is not available right now or doesn't exist, please select other game</b>
+    </n-alert>
+  </div>
     <div class="flex flex-col justify-center  " v-if="!showGame">
         <div class="text-3xl textYellow m-auto mt-4 ">
             Select what is your level
@@ -89,7 +98,7 @@
 
 <script>
 
-import { NSelect, NButton, NCard, NCollapseItem, NCollapse } from "naive-ui";
+import { NSelect, NButton, NCard, NCollapseItem, NCollapse, NAlert } from "naive-ui";
 import { ref } from 'vue';
 import draggable from 'vuedraggable'
 import store from '../store'
@@ -103,7 +112,7 @@ export default {
     components:{ 
         NSelect,draggable,NButton, loading, Icon, SpinnerIos20Filled,
         NCollapseItem, NCollapse
-        ,NCard
+        ,NCard, NAlert
     },
     setup(){
         const value = ref(null)
@@ -117,12 +126,14 @@ export default {
         const showedGame = ref(false)
         const isLoading = ref(false)
         const selectComponents = ref(false)
+        const error = ref()
         return{
             options, value,
             drag, cpus, difficultySelected, 
             games, searchInput,
             selectedGame, isLoading,
-            showedGame, selectComponents
+            showedGame, selectComponents,
+            error
         }
     },
     created(){
@@ -139,6 +150,9 @@ export default {
                     this.showedGame = response.data[this.selectedGame].data;
                     console.log(this.showedGame);
                     return true
+                })
+                .catch((error)=> {
+                    this.error = error
                 })
         },
         nextStep(){
