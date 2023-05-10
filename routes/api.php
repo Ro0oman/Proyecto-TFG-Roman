@@ -26,6 +26,7 @@ Route::middleware('auth:sanctum')->group(function(){
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/userPCS/{id}', [ComputerController::class, 'getIdPc']);
+Route::get('/getPCS', [ComputerController::class, 'getPCS']);
 
 
 /* Como funciona el resource 

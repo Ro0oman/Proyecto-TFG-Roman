@@ -11,7 +11,7 @@
         >
         Have you completed the computer? Or do you want to make any changes?
         <div class="w-full flex flex-row items-center justify-center my-4">
-            <n-button type="info" @click="createComputer()" class="bg-blue-700  mx-2">
+            <n-button type="info" @click="setTitle()" class="bg-blue-700  mx-2">
                 Complete PC
             </n-button>
             <n-button type="warning" @click="showModal = false" class="bg-green-700 mx-2">
@@ -49,10 +49,11 @@
     <div class="flex lg:flex-row flex-col items-center my-10 justify-between w-3/4 m-auto" v-if="!finalStep" >
         <div class="lg:w-1/2 " v-if="!computerCompleted">
             <n-card>
-                <n-transfer ref="transfer" class="min-h-[50vh]" source-filterable v-model:value="value" :options="createOptions" />
+                <n-transfer ref="transfer" class="min-h-[50vh]" source-filterable 
+                v-model:value="value" :options="createOptions" />
             </n-card>
             <div class="flex flex-row w-full items-center justify-center p-4">
-                <n-button type="info" @click="nextSteps" class="mx-2 p-4" :disabled="createOptions.length<0" v-if="actualStep!=='psu'">
+                <n-button type="info" @click="nextSteps" class="mx-2 p-4" v-if="actualStep!=='psu'">
                     Next Step
                 </n-button>
                 <n-button type="info" @click="showConfirmation" class="mx-2" v-else>
@@ -60,7 +61,6 @@
                 </n-button>
             </div>
         </div>
-        
         <div class="lg:w-1/2 mx-2" v-if="!computerCompleted">
             <n-card>
                 Components
@@ -81,15 +81,14 @@
                                 {{ index == 'psu' ? component[0].power+"W"  : '' }}
                             </b>
                         </button>
-                        <div class="text-black" v-if="computerErrors[index].length>0">
-                            {{ computerErrors[index] }}
+                        <div class="text-red-500 font-bold text-xl" v-if="computerErrors">
+                            {{ computerErrors}}
                         </div>
                     </li>
                 </ul>
             </n-card>
-        </div>    
-    </div>
-    <div v-else class="w-2/3 m-auto p-4 bg-slate-700 rounded flex flex-col">
+        </div>  
+        <div v-else class="w-2/3 m-auto p-4 bg-slate-700 rounded flex flex-col">
         <span class="textYellow">Name your computer</span>
         <n-input v-model:value="computerName" type="text" placeholder="Basic Input" class="my-4" />
         <span class="textYellow">Add a little description</span>
@@ -98,10 +97,12 @@
             type="textarea"
             placeholder="Basic Textarea"
         />
-        <n-button type="info" class="my-4 m-auto" >
+        <n-button type="info" class="my-4 m-auto" @click="createComputer()" >
             Create PC
         </n-button>
+    </div>  
     </div>
+    
 </template>
 <script>
 import { ref } from 'vue';
@@ -109,7 +110,6 @@ import { NTabs, NTabPane, NTransfer, NCard, NButton, NInput, NModal } from 'naiv
 import store from '../store'
 import draggable from 'vuedraggable'
 import loading from 'vue3-loading-overlay'
-import axios from 'axios'
 import axiosClient from '../axios';
 import { SpinnerIos20Filled } from '@vicons/fluent'
 import { Icon } from '@vicons/utils'
@@ -136,14 +136,7 @@ export default {
             storage: 'Incompleted',
             psu: 'Incompleted',
         })
-        const computerErrors = ref({
-            cpu: '',
-            motherboard: '',
-            gpu: '',
-            ram: '',
-            storage: '',
-            psu: '',
-        })
+        const computerErrors = ref()
         const validateComputer = ref([
             'cpu', 'motherboard', 'gpu', 'ram',
             'storage', 'psu'
@@ -159,13 +152,14 @@ export default {
         const actualStep = ref('cpu')
         const finalStep = ref(false)
         const computerCompleted = ref(false)
+        const error = ref()
         return {
             game, loadingText, isLoading, computer, value,
             cpuList,actualStep, motherboardList
             , gpuList, ramList, storageList, psuList,
             computerCompleted, cpuSelected, finalStep,
             validateComputer, computerName, computerDescription,
-            validInput, showModal, computerErrors
+            validInput, showModal, computerErrors, error
         }
     },
     async created() {
@@ -182,7 +176,6 @@ export default {
                 .then((response) => {
                     this.motherboardList = response.data
                     this.loadingText = "Loading motherboards"
-
                 });
             await axiosClient.get('ram')
                 .then((response) => {
@@ -215,84 +208,101 @@ export default {
         }
     },
     methods: {
-        validateComponents(){
-           
-        },
         showConfirmation(){
-            this.showModal = true
+            if (this.actualStep == 'psu' && this.value != '') {
+                this.computer.psu = this.psuList.filter( obj => obj.id == this.value[0]);
+                this.value = ''
+                this.actualStep = 'end'
+                console.log(this.computer)
+                this.showModal = true
+            }else{
+                this.computerErrors='You have to complete all fields >:('
+            }
+        },
+        setTitle(){
+            this.computerCompleted = true
+            this.showModal = false
         },
         createComputer(){
-            this.validateComputer.forEach(element => {
-                if(this.computer[element] == '' ||this.computer[element] == undefined ){
-                    this.computerErrors[element] = 'This component cant be empty'
-                    return false
-                }
-            });
-            
-            // let computerCreated = {
-            //     description : 'Descripcion de la patata cosmica, la mejor patata del mundo',
-            //     cpu : this.computer.cpu[0].id,
-            //     motherboard : this.computer.motherboard[0].id,
-            //     gpu : this.computer.gpu[0].id,
-            //     storage : this.computer.storage[0].id,
-            //     psu : this.computer.psu[0].id,
-            //     user : sessionStorage.getItem('ID'),
-            //     pc_name : 'Patata cosmica',
-            //     id_videogame : this.game.steam_appid,
-            //     visible : 0
-            // }
-            // if(this.finalStep == 'done'){
-            //     axiosClient.post('/computer',computerCreated)
-            //     .then((response)=>{
-            //         console.log(response);
-            //     })
-            // }else{
-            //     this.finalStep = 'done'
-            // }
+            let computerCreated = {
+                pc_name : this.computerName,
+                description : this.computerDescription,
+                cpu : this.computer.cpu[0].id,
+                motherboard : this.computer.motherboard[0].id,
+                gpu : this.computer.gpu[0].id,
+                storage : this.computer.storage[0].id,
+                psu : this.computer.psu[0].id,
+                user : sessionStorage.getItem('ID'),
+                id_videogame : this.game.steam_appid,
+                visible : 0
+            }
+            axiosClient.post('/computer',computerCreated)
+            .then((response)=>{
+                console.log(response);
+                this.$router.push({
+                    name:'Application'
+                })
+            })
+           
         },
         nextSteps() {
-            if (this.actualStep == 'cpu') {
+            if (this.actualStep == 'cpu' && this.value != '') {
                 this.computer.cpu = this.cpuList.filter( obj => obj.id == this.value[0]);
+                this.value = ''
                 this.actualStep = 'motherboard'
                 this.computerCompleted = false
+                this.computerErrors = ''
                 return true
+            }else{
+                this.computerErrors='You have to complete all fields >:('
             }
-            if (this.actualStep == 'motherboard') {
+            if (this.actualStep == 'motherboard' && this.value != '') {
                 this.computer.motherboard = this.motherboardList.filter( obj => obj.id == this.value[0]);
+                this.value = ''
                 this.actualStep = 'gpu'
+                this.computerErrors = ''
                 this.computerCompleted = false
                 return true
+            }else{
+                this.computerErrors='You have to complete all fields >:('
             }
-            if (this.actualStep == 'gpu') {
+            if (this.actualStep == 'gpu' && this.value != '') {
                 this.computer.gpu = this.gpuList.filter( obj => obj.id == this.value[0]);
+                this.value = ''
                 this.actualStep = 'ram'
+                this.computerErrors = ''
                 this.computerCompleted = false
                 return true
+            }else{
+                this.computerErrors='You have to complete all fields >:('
             }
-            if (this.actualStep == 'ram') {
+            if (this.actualStep == 'ram' && this.value != '') {
                 this.computer.ram = this.ramList.filter( obj => obj.id == this.value[0]);
+                this.value = ''
                 this.actualStep = 'storage'
+                this.computerErrors = ''
                 this.computerCompleted = false
                 return true
+            }else{
+                this.computerErrors='You have to complete all fields >:('
             }
-            if (this.actualStep == 'storage') {
+            if (this.actualStep == 'storage' && this.value != '') {
                 this.computer.storage = this.storageList.filter( obj => obj.id == this.value[0]);
+                this.value = ''
                 this.actualStep = 'psu'
+                this.computerErrors = ''
                 this.computerCompleted = false
                 return true
+            }else{
+                this.computerErrors='You have to complete all fields >:('
             }
-            if (this.actualStep == 'psu') {
-                this.computer.psu = this.psuList.filter( obj => obj.id == this.value[0]);
-                this.actualStep = 'end'
-                this.computerCompleted = true
-            }
-        },
+        }
+    },
         editComputer(){
             this.actualStep = 'cpu'
             this.computerCompleted = false
             this.nextSteps()
-        }
-    },
+        },
     computed: {
         createOptions() {
             if (this.actualStep == 'cpu') {
@@ -301,20 +311,19 @@ export default {
                     value: v.id,
                     disabled: this.value.length > 0 ? (this.value[0] == v.id ? false : true) : false
                 }));
-                
             }
             if (this.actualStep == 'motherboard') {
                 return Array.from(this.motherboardList).map((v, i) => ({
                     label: v.modelMotherboard + "-" + v.priceMotherboard,
                     value: v.id,
-                    disabled: this.value.length > 0 ? (this.value[0] == v.id ? false : true) : false
+                    disabled: this.value.length > 0 ? (this.value[0] == v.id ? false : true) : (i.chipset == JSON.stringify(this.computer.cpu[0].chipset) ? true : false)
                 }));
             }
             if (this.actualStep == 'gpu') {
                     return Array.from(this.gpuList).map((v, i) => ({
                         label: v.modelGPU + "-" + v.brandGPU,
                         value: v.id,
-                        disabled: this.value.length > 0 ? (this.value[0] == v.id ? false : true) : false
+                        disabled: this.value.length > 0 ? (this.value[0] == v.id ? true : false) : false
                     }));
             }
             if (this.actualStep == 'ram') {

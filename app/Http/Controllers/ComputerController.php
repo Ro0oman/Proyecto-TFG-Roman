@@ -14,7 +14,7 @@ class ComputerController extends Controller
      * Display a listing of the resource.
      */
     public function getIdPc($id_user){
-        $pcs = DB::select('SELECT C.id, C.pc_name, C.description, C.user, C.created_at
+        $pcs = DB::select('SELECT C.id, C.pc_name, C.description, C.user, C.created_at, C.visible
         ,U.name
         ,P.Processorbranding, P.Model, P.CoresThreads, P.Base, P.TDPCPU, P.PriceCPU, P.BrandCPU 
         ,M.socket_cpu, M.modelMotherboard, M.chipset, M.priceMotherboard, M.maxram, M.ram, M.ramslots
@@ -41,6 +41,7 @@ class ComputerController extends Controller
             'pc_name'=>$pc->pc_name,
             'description'=>$pc->description,
             'created_at'=>$pc->created_at,
+            'visible'=>$pc->visible,
             'user'=>array(
                 'id'=>$pc->user,
                 'name'=>$pc->name,
@@ -105,14 +106,12 @@ class ComputerController extends Controller
             }
         }
 
-
-
         return response()->json($computers);
     }
 
     public function index()
     {
-        $pcs = DB::select('SELECT C.id, C.pc_name, C.description, C.user, C.created_at
+        $pcs = DB::select('SELECT C.id, C.pc_name, C.description, C.user, C.created_at, C.visible
         ,U.name
         ,P.Processorbranding, P.Model, P.CoresThreads, P.Base, P.TDPCPU, P.PriceCPU, P.BrandCPU 
         ,M.socket_cpu, M.modelMotherboard, M.chipset, M.priceMotherboard, M.maxram, M.ram, M.ramslots
@@ -139,6 +138,7 @@ class ComputerController extends Controller
             'pc_name'=>$pc->pc_name,
             'description'=>$pc->description,
             'created_at'=>$pc->created_at,
+            'visible'=>$pc->visible,
             'user'=>array(
                 'id'=>$pc->user,
                 'name'=>$pc->name,
@@ -221,6 +221,12 @@ class ComputerController extends Controller
         //
     }
 
+    public function getPCS()
+    {
+        $computers = Computer::all();
+        return response()->json($computers);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -256,7 +262,10 @@ class ComputerController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $pc = Computer::find($id);
+        $pc->visible = $request['visible'];
+        $pc->save();
+        return response()->json($pc);
     }
 
     /**
@@ -264,6 +273,6 @@ class ComputerController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Computer::destroy($id);
     }
 }

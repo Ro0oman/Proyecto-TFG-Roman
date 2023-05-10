@@ -130,12 +130,12 @@
 <script>
 import { ref } from 'vue'
 import store from '../store'
-import { NButton, NCard, NImage, NList, NListItem, NThing, NTabs, NTabPane } from 'naive-ui'
+import { NButton, NCard, NImage, NList, NListItem, NThing, NTabs, NTabPane, NSwitch } from 'naive-ui'
 import axios from 'axios'
 
 export default {
     components: {
-        NButton, NCard, NImage, NList, NListItem, NThing, NTabs, NTabPane
+        NButton, NCard, NImage, NList, NListItem, NThing, NTabs, NTabPane, NSwitch
     },
     setup() {
         const routeComputerId = ref()

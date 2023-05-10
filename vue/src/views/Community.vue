@@ -77,9 +77,9 @@
           </div>
         </div>
       </div>
-      <div class="w-[70vw]" v-else>
+      <div class="w-[70vw] flex items-center justify-center text-3xl" v-else>
         <span>
-          No match found, Be the fisrt to create this PC
+          No match found, Be the first to create this PC
         </span>
       </div>
     </div>
