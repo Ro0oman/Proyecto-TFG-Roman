@@ -1,4 +1,12 @@
 <template>
+  <loading :active="isLoading" :can-cancel="true">
+    <div class="text-xl p-4 bg-black text-white rounded-lg">
+      <Icon class="animate-spin">
+        <SpinnerIos20Filled />
+      </Icon>
+      Loading profile
+    </div>
+  </loading>
   <!-- component -->
   <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/styles/tailwind.css">
   <link rel="stylesheet"
@@ -38,23 +46,13 @@
             </div>
             <div class="text-center mt-6 m-auto flex flex-col items-center">
               <h3 class="text-4xl font-semibold">
-                {{ user.name }}
+                {{ user }}
               </h3>
-              <div class="text-blueGray-400 font-bold flex items-center w-1/2 mt-4">
-                <p class="m-auto flex">
-                  <Icon size="25" color="black">
-                    <VideogameAssetTwotone>
-                    </VideogameAssetTwotone>
-                  </Icon>
-                <div class="mx-2">
-                  Favorite videogame: {{ 'Juego favorito' }}
-                </div>
-                </p>
-              </div>
+
               <div class="flex justify-center py-4">
                 <div class="p-3 text-center">
-                  <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">Computers :
-                    {{ computers.length }}</span>
+                  <p class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">Computers :
+                    {{ computers.length }}</p>
                   <span class="text-xl text-blueGray-400 "></span>
                 </div>
               </div>
@@ -66,14 +64,17 @@
                     <div class="flex justify-between font-bold">
                       <div class="text-black  ml-4 text-center text-2xl">Your computers</div>
                     </div>
-                    <div class="grid lg:grid-cols-2 sm:grid-cols-1 gap-4 w-full mt-4 justify-items-center"
-                      v-if="computers.length < 0">
-                      <div class="w-4/5" v-for="computer in getComputers" :key="computer">
-                        <n-card class="bg-slate-800 text-white ">
+                    <div class="grid lg:grid-cols-2 sm:grid-cols-2 gap-4 w-full mt-4 justify-items-strech">
+                      <div v-for="computer in getComputers" :key="computer">
+                        <n-card class="bg-slate-600 w-full cursor-pointer transition hover:scale-110"
+                          @click="goToComputer(computer)" :bordered="false">
+                          <template #cover v-if="computer.pcVideogames.length">
+                            <img :src="computer.pcVideogames[0].imageUrl">
+                          </template>
                           <div>
-                            <div class="text-xl flex fler-row">
-                              <span class="m-auto w-full">
-                                {{ computer.name }}
+                            <div class="text-xl flex fler-row ">
+                              <span class="w-full">
+                                {{ computer.pc_name }}
                               </span>
                             </div>
                             <div>
@@ -81,61 +82,10 @@
                                 {{ computer.description }}
                               </p>
                               <div class="text-lg grid">
-                                <div class="list">
-                                  <ul>
-                                    <!-- <li>
-                                                <Icon>
-                                                  <Cpu/>
-                                                </Icon>
-                                                <span>CPU:</span>
-                                                {{ computer.cpu.Model }}
-                                              </li>
-                                              <li><span>Motherboard</span>: {{ computer.motherboard.modelMotherboard}}</li>
-                                              <li><span>GPU</span>: {{ computer.gpu.modelGPU }}</li>
-                                              <li><span>RAM</span>
-                                                <li v-for="ramModule in computer.pcRam">
-                                                  {{ ramModule.quantity }}GB - {{ ramModule.type_ram }}
-                                                </li>
-                                              </li>
-                                              <li><span>Power supply</span>: {{ computer.psu.power }}W</li>
-                                              <li><span>Storage</span>:
-                                                <li class="ml-2">{{ computer.storage.quantity }}GB {{ computer.storage.type_storage }}</li>
-                                              </li> -->
-                                    <li v-if="computer.pcVideogames.length">
-                                      <span>Videogames</span>
-                                    <li v-for="game in computer.pcVideogames">
-                                      <img :src="game.imageUrl" alt="">
-                                    </li>
-                                    </li>
-                                  </ul>
-                                </div>
                               </div>
                             </div>
                           </div>
                         </n-card>
-                      </div>
-                    </div>
-                    <div v-else class="flex w-full my-4">
-                      <div class="m-auto">
-                        <n-alert class="bg-slate-500 rounded-lg p-2">
-                          <template #icon>
-                            <n-icon class="text-3xl text-white">
-                              <EmojiSad20Regular />
-                            </n-icon>
-                          </template>
-                          <p class="text-white text-xl font-bold ">
-                            You have not created any computer yet
-                          </p>
-                          <div class="text-xl textYellow  flex-col m-auto items-center justify-center mt-4">
-                            <p class="m-auto">
-                              Create one Here :D
-                            </p>
-                            <n-button class="m-auto" type="success" ghost @click="$router.push('/pccreator')"
-                              color="yellow">
-                              Create your PC
-                            </n-button>
-                          </div>
-                        </n-alert>
                       </div>
                     </div>
                   </div>
@@ -150,59 +100,107 @@
 </template>
   
 <script>
-import { NAvatar, NButton, NCard, NIcon, NAlert } from 'naive-ui'
-import store from '../store'
-import PageComponent from '../components/PageComponent.vue'
-import { ref } from 'vue'
+import { NAvatar, NButton, NCard, NIcon, NAlert } from "naive-ui";
+import store from "../store";
+import PageComponent from "../components/PageComponent.vue";
+import { ref } from "vue";
 import axiosClient from "../axios";
-import { Icon } from '@vicons/utils'
-import { VideogameAssetTwotone } from '@vicons/material'
+import { Icon } from "@vicons/utils";
+import { VideogameAssetTwotone } from "@vicons/material";
 import { EmojiSad20Regular } from "@vicons/fluent";
-import { People20Filled } from '@vicons/fluent'
+import { People20Filled } from "@vicons/fluent";
+import loading from 'vue3-loading-overlay'
+import { SpinnerIos20Filled } from '@vicons/fluent'
+import axios from 'axios'
 
 export default {
   components: {
-    PageComponent, NAvatar, NCard,
-    Icon, VideogameAssetTwotone,
-    People20Filled, NButton, NIcon,
-    NAlert, EmojiSad20Regular
+    PageComponent,
+    NAvatar,
+    NCard,
+    Icon,
+    VideogameAssetTwotone,
+    People20Filled,
+    NButton,
+    NIcon,
+    NAlert,
+    EmojiSad20Regular,
+    loading,
+    SpinnerIos20Filled,
   },
   setup() {
-    const user = ref({})
-    const computers = ref([])
-
+    const user = ref({});
+    const computers = ref([]);
+    const isLoading = ref(true)
     return {
-      user, computers
-    }
+      user,
+      computers,
+      isLoading,
+    };
   },
   async created() {
+    this.user = sessionStorage.getItem('NAME')
     if (Object.keys(store.state.computers).length) {
       this.computers = store.state.computers;
       this.isLoading = false;
       console.log(this.computers);
-      this.getImages()
-
+      this.getImages();
     } else {
-      this.id = parseInt(sessionStorage.getItem('ID'));
-      axiosClient.get(`/userPCS/${this.id}`)
+      this.id = parseInt(sessionStorage.getItem("ID"));
+      axiosClient
+        .get(`/userPCS/${this.id}`)
         .then((response) => {
-          store.commit('setComputers', response.data)
-          this.computers = response.data
+          store.commit("setComputers", response.data);
+          this.computers = response.data;
           console.log(this.computers);
           this.isLoading = false;
-          this.getImages()
+          this.getImages();
         })
         .catch((error) => {
-          this.error = error
-        })
+          this.error = error;
+        });
     }
   },
   computed: {
     getComputers() {
-      return this.computers
-    }
-  }
-}
+      return this.computers;
+    },
+
+  },
+  methods: {
+    getImages() {
+      this.computers.forEach((element) => {
+        element.pcVideogames.forEach((game) => {
+          axios
+            .get(
+              `https://store.steampowered.com/api/appdetails?appids=${game.id_videogame}`,
+              {
+                headers: {
+                  "Access-Control-Allow-Origin": "*",
+                },
+              }
+            )
+            .then((response) => {
+              game.imageUrl =
+                response.data[game.id_videogame].data.header_image;
+              console.log(this.computers);
+              return true;
+            });
+        });
+      });
+    },
+    goToComputer(computer) {
+      store.commit('setComputerId', computer);
+      this.$router.push({
+        path: '/computer/' + computer.id
+      })
+    },
+  },
+};
 </script>
   
-<style></style>
+<style scoped>
+span {
+  color: yellow;
+}
+</style>

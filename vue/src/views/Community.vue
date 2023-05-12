@@ -78,7 +78,7 @@
         </div>
       </div>
       <div class="w-[70vw] flex items-center justify-center text-3xl" v-else>
-        <span>
+        <span v-if="!isLoading">
           No match found, Be the first to create this PC
         </span>
       </div>
@@ -124,23 +124,18 @@ export default {
     }
   },
   created() {
-    if (Object.keys(store.state.allComputers).length) {
-      this.computers = store.state.allComputers;
-      this.isLoading = false;
-      this.getImages()
-    } else {
-      axiosClient.get(`/computer`)
-        .then((response) => {
-          this.computers = response.data
-          this.getImages()
-          store.commit('setAllComputers', response.data)
-          this.isLoading = false;
-        })
-        .catch((error) => {
-          this.error = error
-          this.isLoading = false;
-        })
-    }
+    axiosClient.get(`/computer`)
+      .then((response) => {
+        this.computers = response.data
+        this.getImages()
+        store.commit('setAllComputers', response.data)
+        this.isLoading = false;
+      })
+      .catch((error) => {
+        this.error = error
+        this.isLoading = false;
+      })
+    
   },
   methods: {
     goToComputer(computer){
@@ -172,7 +167,12 @@ export default {
     getImages() {
       this.computers.forEach(element => {
         element.pcVideogames.forEach(game => {
-          axios.get(`https://store.steampowered.com/api/appdetails?appids=${game.id_videogame}`)
+          axios.get(`https://store.steampowered.com/api/appdetails?appids=${game.id_videogame}`,
+          {
+            headers:{
+              "Access-Control-Allow-Origin": "*"
+            }
+          })
             .then((response) => {
               game.imageUrl = response.data[game.id_videogame].data.header_image;
               console.log(this.computers);

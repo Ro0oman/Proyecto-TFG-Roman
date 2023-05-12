@@ -316,7 +316,7 @@ export default {
                 return Array.from(this.motherboardList).map((v, i) => ({
                     label: v.modelMotherboard + "-" + v.priceMotherboard,
                     value: v.id,
-                    disabled: this.value.length > 0 ? (this.value[0] == v.id ? false : true) : (i.chipset == JSON.stringify(this.computer.cpu[0].chipset) ? true : false)
+                    disabled: this.value.length > 0 ? (this.value[0] == v.id ? false : true) : false
                 }));
             }
             if (this.actualStep == 'gpu') {
