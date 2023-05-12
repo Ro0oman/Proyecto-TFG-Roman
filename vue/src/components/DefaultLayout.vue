@@ -126,6 +126,11 @@
                   class="link block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white">
                   Log out
                 </DisclosureButton>
+                <DisclosureButton 
+                  @click="$router.push('/profile')"
+                  class="link block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white">
+                    Profile
+                  </DisclosureButton>
               </div>
             </div>
             <div v-else class="grid gap-2 grid-cols-2 textYellow">

@@ -96,7 +96,7 @@
         <div class="w-full text-center my-4 text-3xl textYellow m-auto mt-2">
             What quality is your game?
             </div>
-        <div class="w-full grid grid-cols-3  place-items-center h-full">
+        <div class="w-full grid lg:grid-cols-3 grid-cols-1 place-items-center h-full">
             <button class="hover:scale-105 flex-col bg-slate-400 transition rounded  p-4 mx-4" 
             @click="difficulty('no')">
             <p class="text-2xl mb-2 textYellow">
