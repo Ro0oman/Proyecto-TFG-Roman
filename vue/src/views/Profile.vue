@@ -34,7 +34,7 @@
                 <div class="">
                   <n-avatar rounded
                     class="absolute -mt-12 -ml-12 bg-[#FF0000] text-yellow-300 rounded-full p-14 text-4xl">
-                    R
+                    {{ getCharAt }}
                   </n-avatar>
                 </div>
               </div>
@@ -42,13 +42,14 @@
                 <div class="py-6 px-3 mt-32 sm:mt-0">
                 </div>
               </div>
-
             </div>
             <div class="text-center mt-6 m-auto flex flex-col items-center">
               <h3 class="text-4xl font-semibold">
-                {{ user }}
+                <n-input class="text-4xl font-semibold p-1" v-model:value="user.name" type="text" placeholder="Change your name" />
               </h3>
-
+              <n-button type="info" text-color="black" @click="updateProfile" class="bg-blue-300  p-2 my-2">
+                Update profile
+              </n-button>
               <div class="flex justify-center py-4">
                 <div class="p-3 text-center">
                   <p class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">Computers :
@@ -105,7 +106,7 @@
 </template>
   
 <script>
-import { NAvatar, NButton, NCard, NIcon, NAlert } from "naive-ui";
+import { NAvatar, NButton, NCard, NIcon, NAlert, NInput } from "naive-ui";
 import store from "../store";
 import PageComponent from "../components/PageComponent.vue";
 import { ref } from "vue";
@@ -117,6 +118,7 @@ import { People20Filled } from "@vicons/fluent";
 import loading from 'vue3-loading-overlay'
 import { SpinnerIos20Filled } from '@vicons/fluent'
 import axios from 'axios'
+import { useMessage } from 'naive-ui'
 
 export default {
   components: {
@@ -132,22 +134,28 @@ export default {
     EmojiSad20Regular,
     loading,
     SpinnerIos20Filled,
+    NInput,
   },
   setup() {
-    const user = ref({});
+    const message = useMessage()
+    const user = ref({name:'User'});
     const computers = ref([]);
     const isLoading = ref(true)
     return {
       user,
       computers,
       isLoading,
+      message,
     };
   },
   async created() {
-    this.user = sessionStorage.getItem('NAME')
+    axiosClient.get(`user/${sessionStorage.getItem("ID")}`)
+    .then(response=>{
+      this.user = response.data
+      this.isLoading = false;
+    })
     if (Object.keys(store.state.computers).length) {
       this.computers = store.state.computers;
-      this.isLoading = false;
       console.log(this.computers);
       this.getImages();
     } else {
@@ -158,21 +166,38 @@ export default {
           store.commit("setComputers", response.data);
           this.computers = response.data;
           console.log(this.computers);
-          this.isLoading = false;
           this.getImages();
+          this.isLoading = false;
         })
         .catch((error) => {
           this.error = error;
         });
+        
     }
   },
   computed: {
     getComputers() {
       return this.computers;
     },
+    getCharAt(){
+      return this.user.name.charAt(0)
+    }
 
   },
   methods: {
+    updateProfile(){
+      axiosClient.put(`user/${sessionStorage.getItem("ID")}`, {name:this.user.name})
+        .then(response =>{
+          this.message.success(
+            "Profile updated"
+          )
+        })
+        .catch(error =>{
+          this.message.error(
+            "Something went wrong"
+          )
+        }) 
+    },
     getImages() {
       this.computers.forEach((element) => {
         element.pcVideogames.forEach((game) => {

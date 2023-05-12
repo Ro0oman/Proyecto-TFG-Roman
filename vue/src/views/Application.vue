@@ -34,9 +34,14 @@
           <div class="w-2/3 m-auto px-4 my-4 p-4 rounded-lg  min-h-[80vh]">
             <div class="flex justify-between font-bold">
               <div class="ml-4 text-center text-2xl textYellow">Community computers</div>
-              <n-button type="success" ghost @click="$router.push('/pccreator')" color="yellow">
+              <div>
+                <n-button type="success" ghost @click="$router.push('/pccreator')" color="yellow">
                 Create your PC
               </n-button>
+              <n-button type="info" ghost @click="reload" color="#ADD8E6" class="mx-1">
+                Reload
+              </n-button>
+              </div>
             </div>
             <div class="grid lg:grid-cols-3 grid-cols-1 sm:grid-cols-1 gap-4 w-full mt-4 justify-items-strech">
               <div v-for="(computer, index) in getComputers" :key="computer">
@@ -47,7 +52,7 @@
                   </template>
                   <div>
                     <div class="text-xl flex fler-row">
-                      <span class="w-full">
+                      <span class="w-full truncate">
                         {{ computer.pc_name }}
                       </span>
                       <span>
@@ -63,7 +68,6 @@
                       <div class="text-lg grid">
                       </div>
                     </div>
-
                   </div>
                 </n-card>
                 <div class="w-full flex justify-center my-2 bg-slate-400 p-2 rounded items-center">
@@ -211,6 +215,9 @@ export default {
         })
       });
     },
+    reload(){
+      window.location.reload()
+    }
   },
   computed: {
     getComputers() {

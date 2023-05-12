@@ -3,7 +3,6 @@
     <n-alert title="Error Text" type="error" closable>
       {{ error }}
       <div>
-        
       </div>
       <br>
       <b>This game is not available right now or doesn't exist, please select other game</b>
@@ -38,7 +37,7 @@
             </button> 
         </div>
     </div>
-    <div v-if="showGame" class="flex flex-col justify-center font-medium ">
+    <div v-if="difficultySelected == 'no'" class="flex flex-col justify-center font-medium ">
         <div class="text-3xl textYellow m-auto mt-2">
             Select what game do you want to play
         </div>
@@ -91,6 +90,34 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <div v-else-if="difficultySelected == 'help'">
+        <div class="w-full text-center my-4 text-3xl textYellow m-auto mt-2">
+            What quality is your game?
+            </div>
+        <div class="w-full grid grid-cols-3  place-items-center h-full">
+            <button class="hover:scale-105 flex-col bg-slate-400 transition rounded  p-4 mx-4" 
+            @click="difficulty('no')">
+            <p class="text-2xl mb-2 textYellow">
+                Low quality
+            </p>
+                <img class="rounded-lg" src="../assets/lowQuality.jpg" width="1200" alt="Low quality">
+            </button> 
+            <button class="hover:scale-105 flex-col bg-slate-400 transition rounded  p-4 mx-4" 
+            @click="difficulty('no')">
+            <p class="text-2xl mb-2 textYellow">
+                Medium quality
+            </p>
+                <img class="rounded-lg" src="../assets/mediumquality.webp" width="1200" alt="Medium quality">
+            </button> 
+            <button class="hover:scale-105 flex-col bg-slate-400 transition rounded  p-4 mx-4" 
+            @click="difficulty('no')">
+            <p class="text-2xl mb-2 textYellow">
+                High quality
+            </p>                
+                <img class="rounded-lg" src="../assets/highquality.jpg" width="1200"  alt="High quality">
+            </button> 
         </div>
     </div>
    

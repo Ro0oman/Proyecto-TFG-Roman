@@ -54,7 +54,7 @@
                   <img :src="computer.pcVideogames[0].imageUrl" >
                 </template>
                 <div>
-                  <div class="text-xl flex fler-row">
+                  <div class="text-xl flex fler-row truncate">
                     <span class="w-full">
                       {{ computer.pc_name }}
                     </span>

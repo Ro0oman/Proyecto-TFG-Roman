@@ -176,11 +176,13 @@
         ];
         const router = useRouter()
         const user = ref({})
+        const userDataBase = ref({})
         const isLogued = ref(false)
         const id = ref() 
         return{
             navigation, firstLetter, user,
-            isLogued, id, fullPage, isLoading
+            isLogued, id, fullPage, isLoading,
+            userDataBase
         }
     },
     methods:{
@@ -200,6 +202,7 @@
           /* Set user data */
           this.id = parseInt(sessionStorage.getItem('ID'));
           this.name = sessionStorage.getItem('NAME');
+          this.firstLetter = this.name.charAt(0)
           store.state.user.data.name = this.name;
           store.state.user.data.id = this.id;
           this.isLogued = true;
@@ -209,12 +212,17 @@
     computed:{
       checkLog(){
         this.user = store.state.user
-        let id =sessionStorage.getItem('ID');
+        let id = sessionStorage.getItem('ID');
         if(!id){
           this.isLogued = false
           return false;
         }else{
-          this.firstLetter = sessionStorage.getItem('NAME').charAt(0);
+          axiosClient.get(`user/${sessionStorage.getItem('ID')}`)
+          .then(response =>{
+            this.userDataBase = response.data
+            this.firstLetter = this.userDataBase.name.charAt(0)
+          }) 
+
           this.isLogued = true;
           return true;
         }
