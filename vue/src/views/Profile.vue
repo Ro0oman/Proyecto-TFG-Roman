@@ -64,9 +64,9 @@
                     <div class="flex justify-between font-bold">
                       <div class="text-black  ml-4 text-center text-2xl">Your computers</div>
                     </div>
-                    <div class="grid lg:grid-cols-2 sm:grid-cols-2 gap-4 w-full mt-4 justify-items-strech">
+                    <div class="grid lg:grid-cols-2 sm:grid-cols-2 gap-4 w-full mt-4 justify-items-strech" v-if="getComputers">
                       <div v-for="computer in getComputers" :key="computer">
-                        <n-card class="bg-slate-600 w-full cursor-pointer transition hover:scale-110"
+                        <n-card class="bg-slate-600 w-full cursor-pointer transition hover:scale-105"
                           @click="goToComputer(computer)" :bordered="false">
                           <template #cover v-if="computer.pcVideogames.length">
                             <img :src="computer.pcVideogames[0].imageUrl">
@@ -86,6 +86,11 @@
                             </div>
                           </div>
                         </n-card>
+                      </div>
+                    </div>
+                    <div v-else>
+                      <div class="flex justify-between font-bold">
+                        <div class="text-black  ml-4 text-center text-2xl">You dont have any computer</div>
                       </div>
                     </div>
                   </div>
