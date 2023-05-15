@@ -6,7 +6,7 @@ use App\Models\hasPc;
 use App\Models\assigned_videogame;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use GuzzleHttp\Client;
 
 class ComputerController extends Controller
 {
@@ -107,6 +107,12 @@ class ComputerController extends Controller
         }
 
         return response()->json($computers);
+    }
+
+    public function getGameID($id){
+        $client = new Client();
+        $res = $client->get('https://store.steampowered.com/api/appdetails?appids='.$id);
+        return $res;
     }
 
     public function index()

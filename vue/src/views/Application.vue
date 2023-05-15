@@ -207,7 +207,7 @@ export default {
     getImages() {
       this.computers.forEach(element => {
         element.pcVideogames.forEach(game => {
-          axios.get(`https://store.steampowered.com/api/appdetails?appids=${game.id_videogame}`)
+          axiosClient.get(`/getGameID/${game.id_videogame}`)
             .then((response) => {
               game.imageUrl = response.data[game.id_videogame].data.header_image;
               return true

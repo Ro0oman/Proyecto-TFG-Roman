@@ -30,10 +30,12 @@
           <input v-model="searchInput" type="text" class="w-full rounded my-2" placeholder="Search any STEAM game" />
           <div class="flex w-full" v-if="searchInput">
             <n-select v-model:value="selectedGame" :options="filteredList" @update:value="search" />
-            <button class="w-1/3 rounded border bg-slate-400" @click="search">
+          </div>
+          <div >
+            <button class="w-1/2 rounded border bg-slate-400" @click="search">
               Search
             </button>
-            <button class="w-1/3 rounded border bg-blue-400" @click="clear">
+            <button class="w-1/2 rounded border bg-blue-400" @click="clear">
               Clear
             </button>
           </div>
@@ -41,13 +43,13 @@
       </div>
       <div class="flex flex-wrap justify-center font-medium " v-if="computers.length">
         <div class="w-2/3 m-auto px-4 my-4 p-4 rounded-lg  min-h-[80vh]">
-          <div class="flex justify-between font-bold">
+          <div class="justify-between font-bold grid grid-cols-1">
             <div class="ml-4 text-center text-3xl text-white">Community computers</div>
             <n-button type="success" ghost @click="createPcCommunity" color="yellow">
               Create your PC
             </n-button>
           </div>
-          <div class="grid lg:grid-cols-3 sm:grid-cols-2 gap-4 w-full mt-4 justify-items-strech">
+          <div class="grid justify-items-strechgrid lg:grid-cols-3 grid-cols-1 sm:grid-cols-1 gap-4 w-full mt-4 justify-items-strech">
             <div v-for="computer in getComputers" :key="computer" >
               <n-card class="bg-slate-600 w-full cursor-pointer transition hover:scale-110" @click="goToComputer(computer)" :bordered="false">
                 <template #cover v-if="computer.pcVideogames.length">
@@ -167,12 +169,7 @@ export default {
     getImages() {
       this.computers.forEach(element => {
         element.pcVideogames.forEach(game => {
-          axios.get(`https://store.steampowered.com/api/appdetails?appids=${game.id_videogame}`,
-          {
-            headers:{
-              "Access-Control-Allow-Origin": "*"
-            }
-          })
+          axiosClient.get(`/getGameID/${game.id_videogame}`)
             .then((response) => {
               game.imageUrl = response.data[game.id_videogame].data.header_image;
               console.log(this.computers);

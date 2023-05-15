@@ -132,6 +132,7 @@ import { ref } from 'vue'
 import store from '../store'
 import { NButton, NCard, NImage, NList, NListItem, NThing, NTabs, NTabPane, NSwitch } from 'naive-ui'
 import axios from 'axios'
+import axiosClient from "../axios";
 
 export default {
     components: {
@@ -153,7 +154,7 @@ export default {
         if (Object.keys(store.state.computerId).length) {
             this.storeComputerId = store.state.computerId;
             let gameId = this.storeComputerId.pcVideogames[0].id_videogame;
-            axios.get(`https://store.steampowered.com/api/appdetails?appids=${gameId}`)
+            axiosClient.get(`/getGameID/${gameId}`)
                 .then((response) => {
                     this.videogameData = response.data[gameId].data;
                     console.log(this.videogameData);

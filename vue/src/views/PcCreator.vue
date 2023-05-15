@@ -23,7 +23,7 @@
                 following compatibility criteria and we will make sure that everything works correctly.<br>
                 <b>Let us take care of everything :D    </b>        
             </p>
-                <img src="../assets/Horror video game-rafiki.svg" class="m-auto" width="400" alt="">
+                <!-- <img src="../assets/Horrorvideogamerafiki.svg" class="m-auto" width="400" alt=""> -->
             </button>
             <button class="hover:scale-110 flex-col bg-slate-400 transition rounded  p-4 mx-4" 
             @click="difficulty('no')">
@@ -134,6 +134,7 @@ import loading from 'vue3-loading-overlay'
 import { Icon } from '@vicons/utils'
 import {SpinnerIos20Filled} from '@vicons/fluent'
 import axios from 'axios'
+import axiosClient from "../axios";
 
 export default {
     components:{ 
@@ -172,7 +173,7 @@ export default {
         },
         search() {
             console.log(this.selectedGame)
-            axios.get(`https://store.steampowered.com/api/appdetails?appids=${this.selectedGame}`)
+            axiosClient.get(`/getGameID/${this.selectedGame}`)
                 .then((response) => {
                     this.showedGame = response.data[this.selectedGame].data;
                     console.log(this.showedGame);

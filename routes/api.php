@@ -27,6 +27,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/userPCS/{id}', [ComputerController::class, 'getIdPc']);
 Route::get('/getPCS', [ComputerController::class, 'getPCS']);
+Route::get('/getGameID/{id}', [ComputerController::class, 'getGameID']);
 
 
 /* Como funciona el resource 

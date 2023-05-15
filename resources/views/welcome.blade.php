@@ -13,6 +13,8 @@
         <!-- Styles -->
     </head>
     <body>
-        {{phpinfo()}}
+        <?
+        
+        ?>
     </body>
 </html>
