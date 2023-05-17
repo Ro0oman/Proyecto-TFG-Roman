@@ -32,14 +32,15 @@ Route::get('/getGameID/{id}', [ComputerController::class, 'getGameID']);
 
 /* Como funciona el resource 
 
-GET|HEAD        api/user ........................................................................................................... user.index › UserController@index  
-POST            api/user ........................................................................................................... user.store › UserController@store  
-GET|HEAD        api/user/create .................................................................................................. user.create › UserController@create  
-GET|HEAD        api/user/{user} ...................................................................................................... user.show › UserController@show  
-PUT|PATCH       api/user/{user} .................................................................................................. user.update › UserController@update  
-DELETE          api/user/{user} ................................................................................................ user.destroy › UserController@destroy  
-GET|HEAD        api/user/{user}/edit ................................................................................................. user.edit › UserController@edit  
+GET|HEAD        api/user ................................ user.index › UserController@index  
+POST            api/user ................................ user.store › UserController@store  
+GET|HEAD        api/user/create ....................... user.create › UserController@create  
+GET|HEAD        api/user/{user} ........................... user.show › UserController@show  
+PUT|PATCH       api/user/{user} ....................... user.update › UserController@update  
+DELETE          api/user/{user} ..................... user.destroy › UserController@destroy  
+GET|HEAD        api/user/{user}/edit ...................... user.edit › UserController@edit  
 */
+
 Route::resources([
     'user' => UserController::class,
 ]);

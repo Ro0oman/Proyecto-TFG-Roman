@@ -89,9 +89,13 @@
             </n-card>
         </div>  
         <div v-else class="w-2/3 m-auto p-4 bg-slate-700 rounded flex flex-col">
+            <n-alert title="Error" type="error" v-if="inputError">
+            COMPLETE ALL FIELDS
+        </n-alert>
         <span class="textYellow">Name your computer</span>
         <n-input v-model:value="computerName" type="text" placeholder="Basic Input" class="my-4" />
         <span class="textYellow">Add a little description</span>
+        
         <n-input
             v-model:value="computerDescription"
             type="textarea"
@@ -106,7 +110,7 @@
 </template>
 <script>
 import { ref } from 'vue';
-import { NTabs, NTabPane, NTransfer, NCard, NButton, NInput, NModal } from 'naive-ui';
+import { NTabs, NTabPane, NTransfer, NCard, NButton, NInput, NModal, NAlert } from 'naive-ui';
 import store from '../store'
 import draggable from 'vuedraggable'
 import loading from 'vue3-loading-overlay'
@@ -118,7 +122,7 @@ export default {
     components: {
         draggable, loading, SpinnerIos20Filled,
         Icon, NTabs, NTabPane, NTransfer, NCard, NButton
-        ,NInput ,NModal
+        ,NInput ,NModal, NAlert
     },
     setup() {
         const game = ref()
@@ -153,13 +157,15 @@ export default {
         const finalStep = ref(false)
         const computerCompleted = ref(false)
         const error = ref()
+        const inputError = ref()
         return {
             game, loadingText, isLoading, computer, value,
             cpuList,actualStep, motherboardList
             , gpuList, ramList, storageList, psuList,
             computerCompleted, cpuSelected, finalStep,
             validateComputer, computerName, computerDescription,
-            validInput, showModal, computerErrors, error
+            validInput, showModal, computerErrors, error,
+            inputError
         }
     },
     async created() {
@@ -236,13 +242,20 @@ export default {
                 id_videogame : this.game.steam_appid,
                 visible : 0
             }
-            axiosClient.post('/computer',computerCreated)
-            .then((response)=>{
-                console.log(response);
-                this.$router.push({
-                    name:'Application'
+
+            if (this.computerName == '' || this.computerDescription == '' || this.computerName == undefined || this.computerDescription == undefined ) {
+                this.inputError = 'Complete all the fields'
+            } else {
+                this.inputError = false
+                axiosClient.post('/computer',computerCreated)
+                .then((response)=>{
+                    console.log(response);
+                    this.$router.push({
+                        name:'Application'
+                    })
                 })
-            })
+            }
+           
            
         },
         nextSteps() {

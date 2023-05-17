@@ -7,6 +7,14 @@
       </div>
     </n-message-provider> 
   </div>
+  <footer class="w-full h-10 bg-slate-600  border-t-2 text-white flex flex-row justify-between p-4">
+        <p class="mb-2">
+          Page created by Roman Myziuk 
+        </p>
+        <p>
+          All rights reserver &copy;
+        </p>
+      </footer>
 </template>
 
 <script>
