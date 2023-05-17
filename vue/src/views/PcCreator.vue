@@ -92,6 +92,11 @@
                             </n-card>
                         </div>
                     </div>
+                    <div v-if="undefinedError" class="flex items-center justify-center mt-4">
+                        <p class="textYellow">
+                            We couldn't find this game, please select other game
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -298,6 +303,7 @@ export default {
         const options = ref([])
         const cpus = ref([])
         const drag = ref(false)
+        const undefinedError = ref(false)
         const difficultySelected = ref(false)
         const games = ref(gameList)
         const searchInput = ref()
@@ -327,7 +333,7 @@ export default {
             showedGame, selectComponents,
             error, help, selectedQuality,
             computerName, computerDescription,
-            computer, inputError
+            computer, inputError, undefinedError
         }
     },
     created() {
@@ -344,6 +350,9 @@ export default {
                 .then((response) => {
                     this.showedGame = response.data[this.selectedGame].data;
                     console.log(this.showedGame);
+                    if(this.showedGame == undefined){
+                        this.undefinedError = true
+                    }
                     return true
                 })
                 .catch((error) => {

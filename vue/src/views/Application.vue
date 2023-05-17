@@ -157,11 +157,6 @@ export default {
   },
   created() {
     /* Get user data with api petition */
-    if (Object.keys(store.state.computers).length) {
-      this.computers = store.state.computers;
-      this.isLoading = false;
-      this.getImages()
-    } else {
       this.id = parseInt(sessionStorage.getItem('ID'));
       axiosClient.get(`/userPCS/${this.id}`)
         .then((response) => {
@@ -180,7 +175,6 @@ export default {
         .catch((error) => {
           this.error = error
         })
-    }
   },
   methods: {
     changeVisibility(computer, indice){
