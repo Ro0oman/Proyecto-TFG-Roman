@@ -31,6 +31,12 @@ const store = createStore({
             return axiosClient.post('/register', user)
             .then(({data})=>{
                 commit('setUser', data)
+                sessionStorage.setItem('TOKEN', data.token); 
+                sessionStorage.setItem('ID', data.user.id); 
+                sessionStorage.setItem('NAME', data.user.name); 
+                setTimeout(() => { 
+                    location.reload();
+                  }, 500);
                 return data
             })
         },
@@ -48,7 +54,7 @@ const store = createStore({
                     sessionStorage.setItem('NAME', response.data.user.name); 
                     setTimeout(() => { 
                         location.reload();
-                      }, 1000);
+                      }, 500);
                     return response.data
                 }
             })

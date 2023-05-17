@@ -96,7 +96,11 @@ export default{
         })
       })
       .catch((error) =>{
-        this.error = error.response.data.message;
+        if(Object.keys(error).length){
+          this.error = error.response.data.message;
+        }else{
+          this.error = error
+        }
       })
     }
   }

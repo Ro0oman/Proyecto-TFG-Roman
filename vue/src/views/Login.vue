@@ -76,7 +76,7 @@
         })
         .catch((error)=>{
           console.log(error);
-          this.error = error
+          this.error = error.response.data.error
         })
       },
       clearError(){
