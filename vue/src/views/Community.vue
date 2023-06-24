@@ -172,7 +172,6 @@ export default {
           axiosClient.get(`/getGameID/${game.id_videogame}`)
             .then((response) => {
               game.imageUrl = response.data[game.id_videogame].data.header_image;
-              console.log(this.computers);
               return true
             })
         })

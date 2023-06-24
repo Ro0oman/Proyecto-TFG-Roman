@@ -157,10 +157,20 @@ export default {
             axiosClient.get(`/getGameID/${gameId}`)
                 .then((response) => {
                     this.videogameData = response.data[gameId].data;
-                    console.log(this.videogameData);
+                    if(this.videogameData.background == undefined){
+                        this.$router.push({
+                            name: 'Dashboard'
+                        })
+                    }
                     return true
                 })
+                .catch(error=>{
+                    this.$router.push({
+                        name: 'Dashboard'
+                    })
+                })
             this.mostrar = true;
+            
         } else {
             this.mostrar = false;
             this.$router.push({
